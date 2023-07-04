@@ -2,6 +2,7 @@ package com.codeaz.taskmanager.controller;
 
 import com.codeaz.taskmanager.dto.ExceptionHandlerDTO;
 import com.codeaz.taskmanager.dto.TaskDTO;
+import com.codeaz.taskmanager.dto.UpdateTaskDTO;
 import com.codeaz.taskmanager.entities.TaskEntity;
 import com.codeaz.taskmanager.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,5 +45,10 @@ public class TaskController {
             return ResponseEntity.badRequest().body(new ExceptionHandlerDTO("Invalid Date format"));
         }
         return ResponseEntity.internalServerError().body(new ExceptionHandlerDTO(e.getMessage()));
+    }
+    @PatchMapping("/{id}")
+    public ResponseEntity<TaskEntity> updateTaskByID(@PathVariable Long id, @RequestBody UpdateTaskDTO dto) throws  ParseException{
+        var updateTask = taskService.updateTask(id,dto.getDescription(), dto.getDeadline(), dto.getComplteted());
+        return ResponseEntity.ok(updateTask);
     }
 }
