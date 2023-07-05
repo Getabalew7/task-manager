@@ -94,4 +94,11 @@ public class TaskService {
             note.setTitle(notesDTO.getTitle());
         return taskEntity;
     }
+
+    public void deleteNotes(Long taskId, int notesId) {
+        TaskEntity taskEntity = getTaskById(taskId);
+        var notes = taskEntity.getNotes();
+        var note = notes.stream().filter(n->n.getId()==notesId).findFirst().orElseThrow();
+        notes.remove(note);
+    }
 }

@@ -68,6 +68,12 @@ public class TaskController {
         TaskEntity notes = taskService.updateNote(taskId, notesId, notesDTO);
         return ResponseEntity.ok(notes);
     }
+    @DeleteMapping("/{taskId}/notes/{notesId}")
+    public ResponseEntity<Void> deleteNotes(@PathVariable Long taskId, @PathVariable int notesId)
+    {
+        taskService.deleteNotes(taskId, notesId);
+        return ResponseEntity.noContent().build();
+    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionHandlerDTO> handleException(Exception e){
         if(e instanceof ParseException){
