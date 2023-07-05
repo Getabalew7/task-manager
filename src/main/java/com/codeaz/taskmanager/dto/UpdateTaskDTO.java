@@ -12,5 +12,5 @@ import lombok.Setter;
 public class UpdateTaskDTO {
     private String description;
     private String  deadline;
-    private  Boolean complteted;
+    private  Boolean completed;
 }

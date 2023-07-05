@@ -1,19 +1,23 @@
 package com.codeaz.taskmanager.service;
 
+import com.codeaz.taskmanager.dto.ExceptionHandlerDTO;
+import com.codeaz.taskmanager.dto.NotesDTO;
+import com.codeaz.taskmanager.dto.TaskNotesDTO;
+import com.codeaz.taskmanager.entities.NotesEntity;
 import com.codeaz.taskmanager.entities.TaskEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
-    private ArrayList<TaskEntity> tasks = new ArrayList<TaskEntity>();
-    long taskId =1;
+    private  List<TaskEntity> tasks = new ArrayList<TaskEntity>();
+    Long taskId =1L;
+    int notesId = 1;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     public TaskEntity addTask(String title, String description, String deadline) throws ParseException {
@@ -25,19 +29,23 @@ public class TaskService {
         task.setDeadline(dateFormat.parse(deadline));
         task.setCompleted(false);
         taskId++;
+        tasks.add(task);
         return task;
     }
-    public ArrayList<TaskEntity> getTasks()
+    public List<TaskEntity> getTasks()
     {
         return tasks;
     }
-    public TaskEntity getTaskById(long id)
-    {
-        var task = tasks.stream().filter(t->taskId==id).findFirst().get();
-        return  task;
+    public TaskEntity getTaskById(Long id)  {
+        return tasks.stream()
+                .filter(task -> task.getId().equals(id))
+                .findFirst()
+                .orElseThrow();
+
     }
     public TaskEntity updateTask(Long id, String description, String deadline, Boolean completed) throws ParseException{
         var task = getTaskById(id);
+        System.out.println(completed);
         if(task==null)
             return null;
 
@@ -49,5 +57,41 @@ public class TaskService {
             task.setCompleted(completed);
 
         return task;
+    }
+    public void deleteTaskById(Long id){
+        var task = getTaskById(id);
+        tasks.remove(task);
+    }
+    public List<NotesEntity> getNotes(Long taskId) {
+        TaskEntity taskEntity = getTaskById(taskId);
+        return taskEntity.getNotes();
+    }
+    public TaskEntity createNotes(Long taskId, NotesDTO notesDTO) {
+        TaskEntity taskEntity = getTaskById(taskId);
+        NotesEntity notes = new NotesEntity();
+        notes.setBody(notesDTO.getBody());
+        notes.setTitle(notesDTO.getTitle());
+        notes.setId(notesId++);
+        var note = taskEntity.getNotes();
+        note.add(notes);
+        return taskEntity;
+    }
+    public TaskEntity updateNote(Long taskId, int notesId, NotesDTO notesDTO) {
+        TaskEntity taskEntity = getTaskById(taskId);
+        if(taskEntity == null)
+            return null;
+        List<NotesEntity> notes = taskEntity.getNotes();
+        if(notes == null)
+            return null;
+        var note =  notes.stream()
+                .filter(task -> task.getId() ==notesId)
+                .findFirst()
+                .orElseThrow();
+
+        if(notesDTO.getBody() != null)
+            note.setBody(notesDTO.getBody());
+        if(notesDTO.getTitle() != null)
+            note.setTitle(notesDTO.getTitle());
+        return taskEntity;
     }
 }
