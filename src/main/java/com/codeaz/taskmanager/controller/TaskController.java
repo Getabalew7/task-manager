@@ -21,15 +21,15 @@ public class TaskController {
     {
         this.taskService = taskService;
     }
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<TaskEntity> addTask(@RequestBody TaskDTO taskDTO) throws ParseException {
         var taskEntity =  taskService.addTask(taskDTO.getTitle(), taskDTO.getDescription(), taskDTO.getDeadline());
         return ResponseEntity.ok(taskEntity);
     }
-    @GetMapping("/")
-    public ResponseEntity<List<TaskEntity>> getTask()
+    @GetMapping("")
+    public ResponseEntity<List<TaskEntity>> getTask(@RequestParam(required = false) Boolean completed)
     {
-        var taskEntity = taskService.getTasks();
+        var taskEntity = taskService.getTasks(completed);
         return ResponseEntity.ok(taskEntity);
     }
     @GetMapping("/{id}")

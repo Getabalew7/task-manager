@@ -32,9 +32,9 @@ public class TaskService {
         tasks.add(task);
         return task;
     }
-    public List<TaskEntity> getTasks()
+    public List<TaskEntity> getTasks(Boolean completed)
     {
-        return tasks;
+        return tasks.stream().filter(t ->t.isCompleted()==completed).collect(Collectors.toList());
     }
     public TaskEntity getTaskById(Long id)  {
         return tasks.stream()
