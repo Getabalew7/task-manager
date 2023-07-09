@@ -9,6 +9,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
+"""
+a data transfer object
+"""
 public class UpdateTaskDTO {
     private String description;
     private String  deadline;
