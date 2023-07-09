@@ -46,7 +46,7 @@ public class TaskService {
     public TaskEntity updateTask(Long id, String description, String deadline, Boolean completed) throws ParseException{
         var task = getTaskById(id);
         System.out.println(completed);
-        if(task==null)
+        if(task==null) // check if the task is in the database, if not no need to update anything
             return null;
 
         if(description != null)
